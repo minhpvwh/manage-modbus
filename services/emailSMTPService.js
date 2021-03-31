@@ -44,6 +44,16 @@ class EmailSMTPService extends BaseService {
         }
     }
 
+    async showRulesMeter(id) {
+        const queryRulesMeter = `select meters.name, alarm_settings.operator, alarm_settings.value_single, alarm_settings.value_from, alarm_settings.value_to\n" +
+            "from alarm_setting_meter\n" +
+            "inner join alarm_settings on alarm_setting_meter.alarm_setting_id = alarm_settings.id\n" +
+            "inner join meters on alarm_setting_meter.meter_id = meters.id\n" +
+            "WHERE alarm_setting_meter.meter_id = ${id}`;
+        const rulesMeter = await getValueQuery(queryRulesMeter);
+        return {rulesMeter: rulesMeter || []}
+    }
+
     async removeEmail(query) {
         const rs = await EmailSMTP.findOneAndUpdate({default: true}, {$pull: {"to": query}}, {new: true});
         if (!rs) {

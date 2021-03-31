@@ -17,6 +17,11 @@ router.get('/meters', (req, res) => {
     return emailController.showMeter(req, res);
 });
 
+router.get('/meters/rules/:id', (req, res) => {
+    return emailController.showRulesMeter(req, res);
+});
+
+
 /* POST SMTP email config page. */
 router.post('/email', (req, res) => {
     return emailController.createEmail(req, res);
