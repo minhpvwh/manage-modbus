@@ -32,26 +32,42 @@ class EmailSMTPService extends BaseService {
         return rs;
     }
 
-    async showMeter() {
+    async showMeter({query = {}, fields = "", page = 0, size = 5, sorts = undefined, populate = []} = {}) {
         try {
             const queryParameterMeters = "select name, id from meter_params";
-            const queryMeters = "select name, id, area from meters";
+            const queryMeters = `select name, id, area from meters limit ${size} offset ${size * page}`;
+            const queryCountMeters = "select count(id) as count from meters";
             const parameterMeters = await getValueQuery(queryParameterMeters);
+            const countMeter = await getValueQuery(queryCountMeters);
             const meters = await getValueQuery(queryMeters);
-            return {parameterMeters: parameterMeters || [], meters: meters || []}
+            const numberPage = size > 0 ? Math.ceil((countMeter[0].count / size)) : 0;
+            console.log(numberPage)
+            return {parameterMeters: parameterMeters || [], meters: meters || [], meta: {count: countMeter[0].count, size: size, totalPage: numberPage, page: page}}
         } catch (e) {
             return false
         }
     }
 
     async showRulesMeter(id) {
-        const queryRulesMeter = `select meters.name, alarm_settings.operator, alarm_settings.value_single, alarm_settings.value_from, alarm_settings.value_to
+        const queryRulesMeter = `select alarm_settings.id, meters.name, meter_params.name as parameter, alarm_settings.operator, alarm_settings.value_single, alarm_settings.value_from, alarm_settings.value_to
             from alarm_setting_meter
             inner join alarm_settings on alarm_setting_meter.alarm_setting_id = alarm_settings.id
             inner join meters on alarm_setting_meter.meter_id = meters.id
+            inner join meter_params on alarm_settings.meter_param_id = meter_params.id
             WHERE alarm_setting_meter.meter_id = ${id}`;
         const rulesMeter = await getValueQuery(queryRulesMeter);
         return {rulesMeter: rulesMeter || []}
+    }
+
+    async deleteRulesMeter(ids) {
+        if (ids) {
+            ids = ids.toString() || '';
+            const queryDeleteRulesMeter = `delete from alarm_settings where id in (${ids})`;
+            const queryDeleteRulesMeterSettings = `delete from alarm_setting_meter WHERE alarm_setting_id in (${ids.toString()})`;
+            await getValueQuery(queryDeleteRulesMeter);
+            await getValueQuery(queryDeleteRulesMeterSettings);
+        }
+        return {}
     }
 
     async removeEmail(query) {
@@ -60,6 +76,14 @@ class EmailSMTPService extends BaseService {
             throw {...constants.errors.NOT_FIND_OBJECT, desc: 'Cannot find'};
         }
         return rs;
+    }
+
+    async deleteMeter(id) {
+        const queryDeleteMeter = `delete from meters where id = ${id}`;
+        const queryDeleteMeterSettings = `delete from alarm_setting_meter where meter_id = ${id}`;
+        await getValueQuery(queryDeleteMeter);
+        await getValueQuery(queryDeleteMeterSettings);
+        return {}
     }
 
 }

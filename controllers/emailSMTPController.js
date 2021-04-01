@@ -1,6 +1,7 @@
 const emailSMTPService = require('../services/emailSMTPService');
 const BaseController = require('./baseController');
 const { messageResponse } = require('../utils/constants');
+const Utils = require('../utils/utils');
 
 class EmailSMTPController extends BaseController {
     constructor() {
@@ -44,7 +45,6 @@ class EmailSMTPController extends BaseController {
     async showRulesMeter(req, res, message =  messageResponse.GET_ALL_SUCCESS) {
         try {
             const rs = await emailSMTPService.showRulesMeter(req.params['id']);
-            console.log(rs)
             // return res.render("../views/meterConfig/modals/showRulesMeter", rs);
             return res.send(rs);
         } catch(error) {
@@ -53,9 +53,25 @@ class EmailSMTPController extends BaseController {
         }
     }
 
+    async deleteRulesMeter(req, res, message= messageResponse.DELETE_SUCCESS) {
+        const rs = await emailSMTPService.deleteRulesMeter(req.body.ids);
+        return res.send(rs);
+    }
+
+    async deleteMeter(req, res, message= messageResponse.DELETE_SUCCESS) {
+        try {
+            const rs = await emailSMTPService.deleteMeter(req.params['id']);
+            return res.redirect("/configs/meters");
+        } catch (err) {
+            console.log("Error delete meter");
+            return res.redirect("/configs/meters");
+        }
+    }
+
     async showMeter(req,res, message = messageResponse.GET_SUCCESS) {
         try{
-            const rs = await emailSMTPService.showMeter();
+            const { query, fields, page, size, sorts } = await Utils.exportParams(req);
+            const rs = await emailSMTPService.showMeter({ query, fields, page, size, sorts });
             return res.render("../views/meterConfig/show", {...rs, rulesMeter: [], activeModal: 'block'});
         } catch(error) {
             console.log("Error show Meter:", error);
