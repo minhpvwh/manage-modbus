@@ -44,7 +44,9 @@ class EmailSMTPController extends BaseController {
     async showRulesMeter(req, res, message =  messageResponse.GET_ALL_SUCCESS) {
         try {
             const rs = await emailSMTPService.showRulesMeter(req.params['id']);
-            return res.render("../views/meterConfig/modals/showRulesMeter", rs);
+            console.log(rs)
+            // return res.render("../views/meterConfig/modals/showRulesMeter", rs);
+            return res.send(rs);
         } catch(error) {
             console.log("Error show rules Meter:", error);
             return res.render("../views/error", {message: "Error", error: error});
@@ -54,7 +56,7 @@ class EmailSMTPController extends BaseController {
     async showMeter(req,res, message = messageResponse.GET_SUCCESS) {
         try{
             const rs = await emailSMTPService.showMeter();
-            return res.render("../views/meterConfig/show", rs);
+            return res.render("../views/meterConfig/show", {...rs, rulesMeter: [], activeModal: 'block'});
         } catch(error) {
             console.log("Error show Meter:", error);
             return res.render("../views/error", {message: "Error", error: error});
