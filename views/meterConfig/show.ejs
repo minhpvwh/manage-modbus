@@ -56,34 +56,35 @@
                 </tbody>
             </table>
             <div class="clearfix">
-                <div class="hint-text">Showing <b><%= meta.size %></b> out of <b><%= meta.count %></b> entries</div>
+                <div class="hint-text">Hiển thị <b><%= meta.size %></b> trên <b><%= meta.count %></b> meter</div>
+
                 <% if (meta.totalPage > 0) { %>
-                <ul class="pagination">
-                    <% if (meta.page == 1) { %>
-                        <li class="page-item disabled"><a href="/configs/meters?page=0&size=5">Previous</a></li>
-                    <% } else { %>
-                        <li class="page-item disabled"><a href="/configs/meters?page=0&size=5">Previous</a></li>
-                    <% } %>
-                    <% var i = (Number(meta.page) > 5 ? Number(meta.page) - 4 : 1) %>
-                    <% if (i !== 1) { %>
-                        <li class="page-item disabled"><a>...</a></li>
-                    <% } %>
-                    <% for (; i <= (Number(meta.page) + 4) && i <= meta.totalPage; i++) { %>
-                        <% if (i == meta.page) { %>
-                            <li class="page-item active"><a><%= i %></a></li>
+                    <ul class="pagination">
+                        <% if (meta.page == 0) { %>
+                            <li class="page-item disabled"><a>First</a></li>
                         <% } else { %>
-                            <li class="page-item"><a href="/products/<%= i %>"><%= i %></a></li>
+                            <li><a href="/configs/meters?page=0&size=<%= meta.size %>">First</a></li>
                         <% } %>
-                        <% if (i == Number(meta.page) + 4 && i < meta.totalPage) { %>
+                        <% var i = (Number(meta.page) > 5 ? Number(meta.page) - 4 : 1) %>
+                        <% if (i !== 1) { %>
                             <li class="page-item disabled"><a>...</a></li>
                         <% } %>
-                    <% } %>
-                    <% if (meta.page == meta.totalPage) { %>
-                        <li class="page-item disabled"><a>Last</a></li>
-                    <% } else { %>
-                        <li class="page-item disabled"><a href="/configs/meters?page=<%= meta.totalPage %>&size=5">Next</a></li>
-                    <% } %>
-                </ul>
+                        <% for (; i <= (Number(meta.page) + 4) && i <= meta.totalPage - 1; i++) { %>
+                            <% if (i == meta.page + 1) { %>
+                                <li class="page-item active"><a><%= i %></a></li>
+                            <% } else { %>
+                                <li><a href="/configs/meters?page=<%= i -1 %>&size=<%= meta.size %>"><%= i %></a></li>
+                            <% } %>
+                            <% if (i == Number(meta.page) + 4 && i < meta.totalPage - 1) { %>
+                                <li class="page-item disabled"><a>...</a></li>
+                            <% } %>
+                        <% } %>
+                        <% if (meta.page == meta.totalPage - 1) { %>
+                            <li class="page-item disabled"><a>Last</a></li>
+                        <% } else { %>
+                            <li><a href="/configs/meters?page=<%= meta.totalPage -1 %>&size=<%= meta.size %>">Last</a></li>
+                        <% } %>
+                    </ul>
                 <% } %>
             </div>
         </div>

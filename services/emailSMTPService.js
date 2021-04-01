@@ -1,19 +1,10 @@
 const BaseService = require('./baseService');
 const EmailSMTP = require("../models/emailSMTPModel");
-const constants = require('../utils/constants');
 const {getValueQuery} = require('../modules/mySQL');
 
 class EmailSMTPService extends BaseService {
     constructor() {
         super(EmailSMTP);
-    }
-
-    async createEmail(data) {
-        const rs = await EmailSMTP.findOneAndUpdate({default: true}, {$push: {to: {email: data}}}, {new: true});
-        if (!rs) {
-            throw {...constants.errors.NOT_FIND_OBJECT, desc: 'Cannot find'};
-        }
-        return rs;
     }
 
     async createRulerMeters(data) {
@@ -22,14 +13,6 @@ class EmailSMTPService extends BaseService {
         const queryCreateToAlarmSettingMeter = `INSERT INTO alarm_setting_meter (alarm_setting_id, meter_id) VALUES (${parameterMeters.insertId}, ${data.meter_id})`;
         await getValueQuery(queryCreateToAlarmSettingMeter);
         return parameterMeters || {}
-    }
-
-    async showEmail() {
-        const rs = await EmailSMTP.findOne({default: true});
-        if (!rs) {
-            throw {...constants.errors.NOT_FIND_OBJECT, desc: 'Cannot find'};
-        }
-        return rs;
     }
 
     async showMeter({query = {}, fields = "", page = 0, size = 5, sorts = undefined, populate = []} = {}) {
@@ -68,14 +51,6 @@ class EmailSMTPService extends BaseService {
             await getValueQuery(queryDeleteRulesMeterSettings);
         }
         return {}
-    }
-
-    async removeEmail(query) {
-        const rs = await EmailSMTP.findOneAndUpdate({default: true}, {$pull: {"to": query}}, {new: true});
-        if (!rs) {
-            throw {...constants.errors.NOT_FIND_OBJECT, desc: 'Cannot find'};
-        }
-        return rs;
     }
 
     async deleteMeter(id) {

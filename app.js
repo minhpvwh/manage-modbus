@@ -7,10 +7,10 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 require("dotenv").config();
 const configs = require('./configs');
-const dbMongo = require('./modules/database');
+// const dbMongo = require('./modules/database');
 const dbMySQL = require('./modules/mySQL');
 const fileUtils = require("./utils/fileUtils");
-dbMongo.connectDB();
+// dbMongo.connectDB();
 dbMySQL.connectDB();
 
 var usersRouter = require('./routes/userRouter');
