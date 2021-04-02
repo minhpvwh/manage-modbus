@@ -32,7 +32,7 @@ class EmailSMTPService extends BaseService {
     }
 
     async showRulesMeter(id) {
-        const queryRulesMeter = `select alarm_settings.id, meters.name, meter_params.name as parameter, alarm_settings.operator, alarm_settings.value_single, alarm_settings.value_from, alarm_settings.value_to
+        const queryRulesMeter = `select alarm_settings.id, meters.name, meter_params.name as parameter, alarm_settings.operator, alarm_settings.value_single, alarm_settings.value_from, alarm_settings.value_to, alarm_settings.message
             from alarm_setting_meter
             inner join alarm_settings on alarm_setting_meter.alarm_setting_id = alarm_settings.id
             inner join meters on alarm_setting_meter.meter_id = meters.id

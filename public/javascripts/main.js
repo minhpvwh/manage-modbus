@@ -36,6 +36,7 @@ $(document).ready(function () {
                 <td>${row.value_single || ''}</td>
                 <td>${row.value_from || ''}</td>
                 <td>${row.value_to || ''}</td>
+                <td>${row.message || ''}</td>
                 </tr>`).after(function () {
                     initRule();
                 })

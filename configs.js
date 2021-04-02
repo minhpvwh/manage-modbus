@@ -35,6 +35,11 @@ const mySqlConfig = {
     MYSQL_PASSWORD: process.env.MYSQL_PASSWORD || 'MFa74ysYxCnFSnt5',
 };
 
+const redisConfig = {
+    REDIS_PORT: process.env.REDIS_PORT || 6379,
+    REDIS_HOST: process.env.REDIS_HOST || '127.0.0.1',
+};
+
 module.exports = {
     serverConfig,
     mongoDBConfig,
@@ -42,4 +47,5 @@ module.exports = {
     apiVersion,
     smtpConfig,
     mySqlConfig,
+    redisConfig,
 };

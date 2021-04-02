@@ -60,7 +60,7 @@ app.use(function(err, req, res, next) {
 });
 
 app.disable("x-powered-by");
-
+require('./modules/redisService').connect();
 fileUtils.mkdirs(configs.storeConfig.UPLOAD_FOLDER);
 
 module.exports = app;
