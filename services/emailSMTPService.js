@@ -8,7 +8,7 @@ class EmailSMTPService extends BaseService {
     }
 
     async createRulerMeters(data) {
-        const queryCreateRuleMeter = `INSERT INTO alarm_settings (operator, value_single, value_from, value_to, meter_param_id) VALUES ("${data.operator}",${data.value_single || null},${data.value_from || null},${data.value_to || null},${data.meter_param_id})`;
+        const queryCreateRuleMeter = `INSERT INTO alarm_settings (operator, value_single, value_from, value_to, meter_param_id, message) VALUES ("${data.operator}",${data.value_single || null},${data.value_from || null},${data.value_to || null},${data.meter_param_id}, "${data.message}")`;
         const parameterMeters = await getValueQuery(queryCreateRuleMeter);
         const queryCreateToAlarmSettingMeter = `INSERT INTO alarm_setting_meter (alarm_setting_id, meter_id) VALUES (${parameterMeters.insertId}, ${data.meter_id})`;
         await getValueQuery(queryCreateToAlarmSettingMeter);

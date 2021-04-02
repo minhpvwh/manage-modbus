@@ -30,9 +30,9 @@ const smtpConfig = {
 const mySqlConfig = {
     MYSQL_HOST: process.env.MYSQL_HOST || 'tuvnordvietnam.vn',
     MYSQL_PORT: process.env.MYSQL_PORT || 33306,
-    MYSQL_DATABASE_NAME: process.env.MYSQL_DATABASE_NAME || 'pmsa_dev',
-    MYSQL_USERNAME: process.env.MYSQL_USERNAME || 'pmsa_dev',
-    MYSQL_PASSWORD: process.env.MYSQL_PASSWORD || 'MFa74ysYxCnFSnt5',
+    MYSQL_DATABASE_NAME: process.env.MYSQL_DATABASE_NAME || 'pmsa_node',
+    MYSQL_USERNAME: process.env.MYSQL_USERNAME || 'pmsa_node',
+    MYSQL_PASSWORD: process.env.MYSQL_PASSWORD || 'C6pYpK3j4w8yLBwY',
 };
 
 const redisConfig = {
