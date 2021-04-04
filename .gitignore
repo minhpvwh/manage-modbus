@@ -92,3 +92,5 @@ typings/
 # cache
 .idea
 
+package-lock.json
+

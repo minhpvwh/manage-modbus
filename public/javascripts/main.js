@@ -8,22 +8,23 @@ $(document).ready(function () {
     // jQuery methods go here...
     $('a.edit').click(function (e) {
         e.preventDefault();
-        const id = $(this).parents('tr').data('id');
+        const id = $(this).data('group-id');
         modal = $('#editEmployeeModal');
-        $.get(`/configs/meters/rules/${id}`, function (data) {
-            tbody = $('#editEmployeeModal tbody').empty();
-            $('#editEmployeeModal input#selectAllRule').prop('checked', false);
-            for (const row of data.rulesMeter) {
-                if (row.operator === 'between') {
-                    row.operator = 'Ngưỡng';
-                } else if (row.operator === 'smaller') {
-                    row.operator = 'Nhỏ hơn'
-                } else if (row.operator === 'greater') {
-                    row.operator = 'Lớn hơn'
-                } else if (row.operator === 'equal') {
-                    row.operator = 'Bằng'
-                }
-                tbody.append(`<tr data-id=${row.id}>
+        tbody = $('#editEmployeeModal tbody').empty();
+        $('#editEmployeeModal input#selectAllRule').prop('checked', false);
+        if (id) {
+            $.get(`/configs/meters/rules/${id}`, function (data) {
+                for (const row of data.rulesMeter) {
+                    if (row.operator === 'between') {
+                        row.operator = 'Ngưỡng';
+                    } else if (row.operator === 'smaller') {
+                        row.operator = 'Nhỏ hơn'
+                    } else if (row.operator === 'greater') {
+                        row.operator = 'Lớn hơn'
+                    } else if (row.operator === 'equal') {
+                        row.operator = 'Bằng'
+                    }
+                    tbody.append(`<tr data-id=${row.id}>
                 <td>
                 <span class="custom-checkbox">
                     <input type="checkbox" id="checkbox2" name="options[]" value="1">
@@ -31,28 +32,41 @@ $(document).ready(function () {
                 </span>
                 </td>
                 <td>${row.name}</td>
-                <td>${row.parameter}</td>
                 <td>${row.operator}</td>
                 <td>${row.value_single || ''}</td>
                 <td>${row.value_from || ''}</td>
                 <td>${row.value_to || ''}</td>
                 <td>${row.message || ''}</td>
                 </tr>`).after(function () {
-                    initRule();
-                })
-            }
-            // set values in modal
-            // modal.find('form').attr('action', '/admin/categories/get-cateory/' + tr.data('id') );
-            // modal.find('[name=title]').val( data.title );
-            // // open modal
-            // modal.modal('show');
-        });
+                        initRule();
+                    })
+                }
+            });
+        }
+        modal.modal('show');
+    });
+
+    $('a.edit-group').click(function (e) {
+        e.preventDefault();
+        const meterId = $(this).parents('tr').data('id');
+        const groupId = $(this).data('group-id');
+        modal = $('#editMeterRuleGroupModal');
+        $('#editMeterRuleGroupModal select#selectMeterEdit').val(meterId);
+        $('#editMeterRuleGroupModal select#selectRuleGroupEdit').val(groupId);
+        if (!groupId) {
+            $('#editMeterRuleGroupModal select#selectRuleGroupEdit').val(-1);
+        }
+        if (!meterId) {
+            $('#editMeterRuleGroupModal select#selectMeterEdit').val(-1);
+        }
+        modal.find('form').attr({action: `/configs/meters/edit`, method: 'POST'});
         modal.modal('show');
     });
 
     $('a.delete').click(function (e) {
         e.preventDefault();
         const id = $(this).parents('tr').data('id');
+        console.log(id)
         modal = $('#deleteEmployeeModal');
         modal.find('form').attr({action: `/configs/meters/delete/${id}`, method: 'GET'});
         modal.modal('show');
@@ -101,19 +115,19 @@ $(document).ready(function () {
         });
     }
 
-    $('div#editEmployeeModal input#deleteRules').click(function (e) {
-        e.preventDefault();
-        rows = $('#editEmployeeModal .custom-checkbox #checkbox2:checked').parents('tr');
-        let ids = [];
-        for (const row of rows) {
-            ids.push($(row).data('id'));
-        }
-        $.ajax({
-            url: '/configs/meters/rules',
-            type: 'DELETE',
-            data: {ids: ids}
-        });
-        modal = $('#editEmployeeModal').modal('hide');
-    });
+    // $('div#editEmployeeModal input#deleteRules').click(function (e) {
+    //     e.preventDefault();
+    //     rows = $('#editEmployeeModal .custom-checkbox #checkbox2:checked').parents('tr');
+    //     let ids = [];
+    //     for (const row of rows) {
+    //         ids.push($(row).data('id'));
+    //     }
+    //     $.ajax({
+    //         url: '/configs/meters/rules',
+    //         type: 'DELETE',
+    //         data: {ids: ids}
+    //     });
+    //     modal = $('#editEmployeeModal').modal('hide');
+    // });
 
 });
