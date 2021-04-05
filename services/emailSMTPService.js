@@ -1,6 +1,7 @@
 const BaseService = require('./baseService');
 const EmailSMTP = require("../models/emailSMTPModel");
 const {getValueQuery} = require('../modules/mySQL');
+const {updateMeterRules, deleteMeterRules} = require('../modules/redisService');
 
 class EmailSMTPService extends BaseService {
     constructor() {
@@ -8,9 +9,9 @@ class EmailSMTPService extends BaseService {
     }
 
     async createRulerMeters(data) {
-        console.log(data);
         const queryCreateRuleMeter = `INSERT INTO alarm_settings (operator, value_single, value_from, value_to, meter_param_id, message, group_id) VALUES ("${data.operator}",${data.value_single || null},${data.value_from || null},${data.value_to || null},${data.meter_param_id}, "${data.message}", ${data.group_id})`;
         const parameterMeters = await getValueQuery(queryCreateRuleMeter);
+        updateMeterRules(parameterMeters.insertId);
         return parameterMeters || {}
     }
 
@@ -67,6 +68,9 @@ class EmailSMTPService extends BaseService {
             ids = ids.toString() || '';
             const queryDeleteRulesMeter = `delete from alarm_settings where id in (${ids})`;
             await getValueQuery(queryDeleteRulesMeter);
+            for (const id of ids) {
+                updateMeterRules(id);
+            }
         }
         return {}
     }
@@ -75,6 +79,7 @@ class EmailSMTPService extends BaseService {
         if (data.id && data.alarm_group_id) {
             const queryUpdateMeter = `update meters set alarm_group_id = ${data.alarm_group_id} where id = ${data.id}`;
             await getValueQuery(queryUpdateMeter);
+            updateMeterRules(data.id);
         }
         return {}
     }
@@ -82,6 +87,7 @@ class EmailSMTPService extends BaseService {
     async deleteMeter(id) {
         const queryDeleteMeter = `delete from meters where id = ${id}`;
         await getValueQuery(queryDeleteMeter);
+        deleteMeterRules(id);
         return {}
     }
 
