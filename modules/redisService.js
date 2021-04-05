@@ -5,6 +5,9 @@ let redisClient;
 
 async function connect() {
     redisClient = redis.createClient({host: config.redisConfig.REDIS_HOST, port: config.redisConfig.REDIS_PORT, db: 1});
+    redisClient.on("error", function (err) {
+        console.log("Error Redis: " + err);
+    });
     console.log("Connected Redis");
     const queryGetMeters = `select id, alarm_group_id from meters`;
     const getMeters = await getValueQuery(queryGetMeters);
